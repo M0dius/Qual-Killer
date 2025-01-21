@@ -80,11 +80,7 @@ make-your-game/
 
 ## Future Improvements
 
-- Add real-time notifications.
-- Improve the user interface.
-- Implement more advanced moderation tools.
-- Enhance security features.
-- Add support for multiple languages.
+- 
 
 ## Contributing
 
