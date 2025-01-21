@@ -75,8 +75,7 @@ make-your-game/
 
 ## Limitations
 
-- Limited to basic forum functionalities.
-- No real-time updates.
+-
 
 ## Future Improvements
 
