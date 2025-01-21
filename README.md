@@ -52,7 +52,7 @@ make-your-game/
 
 ### Prerequisites
 
-- Any browser capable of running HTML, CSS, and Javascript
+- Any modern web browser
 
 ### Installation
 
