@@ -1,0 +1,10 @@
+
+TO BE DONE
+######################
+1. Pause menu with pause functionality
+2. Restart Option("included after losing yet not while playing")
+3. Score or XP
+4. Lives for each difficulty
+5. Start page for selecting difficulty
+6. Formation change
+7. Add Enemies(optional)
