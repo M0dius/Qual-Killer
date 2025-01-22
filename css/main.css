@@ -1,3 +1,6 @@
+/* All game sprites have an absolute position, width, and a margin half of the width. 
+This centers their X and Y values, making it easier to mvoe them around. */
+
 html,
 body {
   height: 100%;
@@ -20,12 +23,13 @@ header {
   background: black;
   color: #fff;
   padding: 10px;
+  font-size: 25px;
 }
 
 footer {
   padding: 10px;
   text-align: center;
-  font-size: 11px;
+  font-size: 15px;
   background: black;
   color: white;
 }
@@ -37,15 +41,19 @@ footer {
   align-items: center;
   background: #222;
 }
+
 .game {
   width: 800px;
   height: 600px;
-  background: url(assets/background.png);
-  animation: scroll-background 5s linear infinite;
+  background: url(../assets/images/background/space.png);
+  /*loop the animation at a linear (constant) speed over 10 seconds (affects speed of animation) */
+  animation: scroll-background 10s linear infinite;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   position: relative;
 }
 
+/*this function loops through the entire image from top to bottom,
+after which the animation will repeat, creating a seamless transition*/
 @keyframes scroll-background {
   from {
     background-position-y: 0px;
@@ -55,35 +63,10 @@ footer {
   }
 }
 
-.game .enemy {
-  position: absolute;
-  margin-left: -20px;
-  margin-top: -18px;
-  width: 40px;
-}
-
-.game .player {
-  position: absolute;
-  margin-left: -20px;
-  width: 40px;
-}
-
-.game .laser {
-  position: absolute;
-  margin-left: -2.5px;
-  height: 30px;
-}
-
-.game .enemy-laser {
-  position: absolute;
-  margin-left: -2.5px;
-  height: 30px;
-}
-
 .congratulations {
   display: none;
   position: absolute;
-  background: #41c726;
+  background: #c7a526;
   color: white;
   padding: 20px 50px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -104,32 +87,3 @@ footer {
   animation: pop-in 1s;
 }
 
-.btn {
-  border: 2px solid #36bbf5;
-  border-radius: 3px;
-  box-shadow: 0 2px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(
-    to bottom,
-    #fff 0%,
-    #fff 49%,
-    #f5f5f5 50%,
-    #eee 100%
-  );
-  padding: 10px 40px;
-  font: 14px sans-serif;
-}
-@keyframes pop-in {
-  0% {
-    opacity: 0;
-    transform: translate(0, -100px);
-  }
-  10% {
-    opacity: 1;
-  }
-  50% {
-    transform: translate(0, 30px);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
-}
