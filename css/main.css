@@ -106,3 +106,10 @@ after which the animation will repeat, creating a seamless transition*/
   height: 50px;
 }
 
+.game .enemy-laser {
+  position: absolute;
+  margin-left: -2.5px;
+  height: 30px;
+}
+
+
