@@ -2,9 +2,21 @@
 const $gameContainer = document.querySelector('.game')
 const $score = document.querySelector('.score')
 const $lives = document.querySelector('.lives')
+const $timer = document.querySelector('.timer')
 let score = 0
 let lives = 3
-let isRunning = true
+let count = 60
+const timer = setInterval(function() {
+    if(isRunning) {
+        count--
+        $timer.innerHTML = count
+        if (count === 0) {
+            GAME_STATE.gameOver = true
+            clearInterval(timer)
+        }
+    }
+}, 1000)
+let isRunning = false
 
 const GAME_WIDTH = 800
 const GAME_HEIGHT = 600
@@ -21,7 +33,7 @@ const ENEMIES_PER_ROW = 10
 const ENEMY_HORIZONTAL_PADDING = 80
 const ENEMY_VERTICAL_PADDING = 70
 const ENEMY_VERTICAL_SPACING = 80
-const ENEMY_COOLDOWN = 15.0;
+const ENEMY_COOLDOWN = 10.0;
 
 //stores everything happening in the game at any given time
 const GAME_STATE = {
@@ -274,6 +286,7 @@ function init () {
     createPlayer($gameContainer)
     $score.innerHTML = score;
     $lives.innerHTML = lives;
+    $timer.innerHTML = count;
 
     const enemySpacing = (GAME_WIDTH - ENEMY_HORIZONTAL_PADDING * 2) / (ENEMIES_PER_ROW - 1)
     for (let j = 0; j < 3; j++) {
@@ -320,9 +333,7 @@ function update() {
     }
 
     //display game over screen when true
-    if (GAME_STATE.gameOver) {
-        // lives -= 1;
-        // $lives.innerHTML = lives;    
+    if (GAME_STATE.gameOver) { 
         document.querySelector(".game-over").style.display = "block"
         return
     }
@@ -340,6 +351,7 @@ function update() {
 
 //closes pause menu and resumes update loop
 function start(){
+    document.querySelector(".game-start").style.display = "none"
     document.querySelector(".game-paused").style.display = "none"
     isRunning = true
     GAME_STATE.gamePaused = false

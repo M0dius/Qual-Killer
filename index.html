@@ -10,8 +10,7 @@
 
 <body>
     <div class="wrap">
-        <header>Qual Killer</header>
-        <div class="game-wrapper">
+        <header>
             <div class="game-board">
                 <div class="board-comp">
                     <h1>Score</h1><h1 class="score"></h1>
@@ -19,7 +18,12 @@
                 <div class="board-comp">
                     <h1>Lives</h1><h1 class="lives"></h1>
                 </div>
+                <div class="board-comp">
+                    <h1>Timer</h1><h1 class="timer">60</h1>
+                </div>
             </div>
+        </header>
+        <div class="game-wrapper">
             <div class="game"></div>
             <div class="congratulations">
                 <h1>YOU WON</h1>
@@ -37,8 +41,13 @@
                 <button class="btn" onclick="window.location.reload()">Restart</button>
                 <button class="btn" onclick="start()">Continue</button>
             </div>
+            <div class="game-start">
+                <h1>START GAME?</h1>
+                <h2>Can you defeat Qual?</h2>
+                <button class="btn" onclick="start()">Yes</button>
+            </div>
         </div>  
-        <footer>left left/right arrow and A/D keys to move, SPACE to shoot laser, P to pause</footer>
+        <footer>left/right arrow and a/d keys to move, SPACE to shoot laser, p to pause</footer>
     </div>
     <script src="js/game.js"></script>
 </body>
