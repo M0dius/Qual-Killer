@@ -16,12 +16,12 @@ check for collisions, and change game state when necessary
 - Proper use of RequestAnimationFrame
 - It is very hard to predict performances in JS. So measure performances to see if your code is fast. This will be tested!
 - Pause menu, that includes:
-1. Continue
-2. Restart
+    1. Continue
+    2. Restart
 - A score board that displays the following metrics:
-1. Countdown clock or Timer that will indicate the amount of time the player has until the game ends or the time that the game has been running
-2. Score that will display the current score (XP or points)
-3. Lives that shows the number of lives that the player has left
+    1. Countdown clock or Timer that will indicate the amount of time the player has until the game ends or the time that the game has been running
+    2. Score that will display the current score (XP or points)
+    3. Lives that shows the number of lives that the player has left
 - The use of layers must be minimal but not zero in order to optimize the rendering performance.
 - You must not use frameworks or canvas, the game must be implemented using plain JS/DOM and HTML only
 
@@ -45,6 +45,8 @@ Instead, for example, if a key is kept pressed, the player must continue to do t
 ```
 assets/
 ├── images/
+│   ├── example/
+│   │   └── game.png
 │   ├── background/
 │   │   └── space.png
 │   ├── enemy/
@@ -57,7 +59,7 @@ assets/
 ├── sounds/
 │   └── Zoltraak.mp3
 ├── css/
-│   └──main.css
+│   └── main.css
 └── js/
     └── game.js
 index.html
