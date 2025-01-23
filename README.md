@@ -120,4 +120,3 @@ README.md
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE.md](https://learn.reboot01.com/git/malalawi/make-your-game/src/branch/master/LICENSE) file for details.
-
