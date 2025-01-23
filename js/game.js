@@ -8,6 +8,11 @@ const PLAYER_WIDTH = 60
 
 //stores everything happening in the game at any given time
 const GAME_STATE = {
+    rightArrowPressed: false,
+    leftArrowPressed: false,
+    lowerAPressed: false,
+    lowerDPressed: false,
+    spacePressed: false,
     playerX: 0,
     playerY: 0,
 }
@@ -16,9 +21,16 @@ function setPosition($el, x, y) {
     $el.style.transform = `translate(${x}px, ${y}px)`
 }
 
+function clamp(v, min, max) {
+    /*if v is less than min, return min
+    if v is greater than max, return max, else return v
+    in ternary because it look fancy!*/
+    return v < min ? min : v > max ? max : v;
+}
+
 function createPlayer($container) {
     /*setting the player's X and Y properties to the middle using
-    CSS helps here, as it's not necessary to compensate for the usual off-set!*/
+    in CSS helps us here as we do not have to compensate for the usual off-set!*/
 
     //sets player position on the Y axis of the game container
     GAME_STATE.playerX = GAME_WIDTH / 2;
@@ -34,52 +46,80 @@ function createPlayer($container) {
     setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY)
 }
 
-function createLaser($container, x, y) {
-    const $element = document.createElement('img')
-    $element.src = 'assets/images/laser/Zoltraak.png'
-    $element.className = 'laser'
-    $container.appendChild($element)
-    /*abstraction of laser, pushed to game state
-    to allow easily changing positions of all lasers*/
-    const laser = { x, y, $element }
-    GAME_STATE.lasers.push(laser)
-    setPosition($element, x, y)
-    const audio = new Audio('assets/sounds/Zoltraak.mp3')
-    audio.play()
-}
+function updatePlayer() {
+    /*although a switch-case statement is more appropriate here,
+    it would allow the player to move in both directions at once*/
+    if (GAME_STATE.rightArrowPressed) {
+        GAME_STATE.playerX += 5
+    }
+    if (GAME_STATE.leftArrowPressed) {
+        GAME_STATE.playerX -= 5
+    }5
+    if (GAME_STATE.lowerDPressed) {
+        GAME_STATE.playerX += 5
+    }
+    if (GAME_STATE.lowerAPressed) {
+        GAME_STATE.playerX -= 5
+    }
 
+    //restricts player to the bounds of the game container
+    GAME_STATE.playerX = clamp(
+        GAME_STATE.playerX, 
+        PLAYER_WIDTH, 
+        GAME_WIDTH - PLAYER_WIDTH)
 
-/*this approach depends on the rate at which keydown receives
-input, which is tied to the typematic rate keyboard setting of the operating system.
-this is why movement is janky and delayed. upon further research, a possible culprit could be
-Windows' key-repeat feature.*/
-function onKeyDown(e) {
-    if (e.key === 'ArrowLeft') {
-         GAME_STATE.playerX -= 5;
-         const $player = document.querySelector(".player");
-         setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY);
-    } else if (e.key === 'ArrowRight') {
-        GAME_STATE.playerX += 5;
-        const $player = document.querySelector(".player");
-        setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY);
-    } else if (e.key === 'a') {
-        GAME_STATE.playerX -= 5;
-        const $player = document.querySelector(".player");
-        setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY);
-   } else if (e.key === 'd') {
-       GAME_STATE.playerX += 5;
-       const $player = document.querySelector(".player");
-       setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY);
-   }
+    const $player = document.querySelector('.player')
+    setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY)
 }
 
 //creates necessary elements for the game
 function init () {
-    //declaring and initializing the 'frame' of the game
     //dollar sign refers to DOM element (convention)
     createPlayer($gameContainer)
+}
+
+function update() {
+    updatePlayer()
+    window.requestAnimationFrame(update)
+}
+
+function onKeyDown(e) {
+    // console.log(e)
+    switch (e.key) {
+        case 'ArrowRight':
+            GAME_STATE.rightArrowPressed = true
+            break
+        case 'ArrowLeft':
+            GAME_STATE.leftArrowPressed = true
+            break
+        case 'a':
+            GAME_STATE.lowerAPressed = true
+            break
+        case 'd':
+            GAME_STATE.lowerDPressed = true
+            break
+    }
+}
+
+function onKeyUp(e) {
+    switch (e.key) {
+        case 'ArrowRight':
+            GAME_STATE.rightArrowPressed = false
+            break
+        case 'ArrowLeft':
+            GAME_STATE.leftArrowPressed = false
+            break
+        case 'a':
+            GAME_STATE.lowerAPressed = false
+            break
+        case 'd':
+            GAME_STATE.lowerDPressed = false
+            break
+    }
 }
 
 init();
 
 window.addEventListener('keydown', onKeyDown);
+window.addEventListener('keyup', onKeyUp);
+window.requestAnimationFrame(update);
