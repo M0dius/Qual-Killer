@@ -149,8 +149,8 @@ function createLaser($container, x, y) {
     const laser = { x, y, $element }
     GAME_STATE.lasers.push(laser)
     setPosition($element, x, y)
-    const audio = new Audio('assets/sounds/Zoltraak.mp3')
-    audio.play()
+    // const audio = new Audio('assets/sounds/Zoltraak.mp3')
+    // audio.play()
 }
 
 function updateLasers(deltaTime, $container) {
@@ -310,6 +310,7 @@ function update() {
     if (GAME_STATE.gamePaused) {
         stop()
         document.querySelector(".game-paused").style.display = "block"
+        //reruns the loop with !isRunning to pause
         window.requestAnimationFrame(update)
     }
 
@@ -337,13 +338,15 @@ function update() {
     window.requestAnimationFrame(update)
 }
 
+//closes pause menu and resumes update loop
 function start(){
     document.querySelector(".game-paused").style.display = "none"
     isRunning = true
     GAME_STATE.gamePaused = false
     window.requestAnimationFrame(update)
 }
-  
+
+//stops the update loop
 function stop(){
     isRunning = false
 }
