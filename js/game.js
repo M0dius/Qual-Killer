@@ -33,7 +33,7 @@ const ENEMIES_PER_ROW = 10
 const ENEMY_HORIZONTAL_PADDING = 80
 const ENEMY_VERTICAL_PADDING = 70
 const ENEMY_VERTICAL_SPACING = 80
-const ENEMY_COOLDOWN = 10.0;
+const ENEMY_COOLDOWN = 10.0
 
 //stores everything happening in the game at any given time
 const GAME_STATE = {
@@ -64,7 +64,7 @@ function rectsIntersect(r1, r2) {
         r2.top > r1.bottom ||
         //if the bottom side of r2 is atop of the top side of r1, hitbox cannot be intersecting
         r2.bottom < r1.top
-    );
+    )
 }
 
 function setPosition($el, x, y) {
@@ -75,16 +75,16 @@ function clamp(v, min, max) {
     /*if v is less than min, return min
     if v is greater than max, return max, else return v
     ternary because fancy*/
-    return v < min ? min : v > max ? max : v;
+    return v < min ? min : v > max ? max : v
 }
 
 function rand(min, max) {
     //sets the default values when not provided 
-    if (min === undefined) min = 0;
-    if (max === undefined) max = 1;
+    if (min === undefined) min = 0
+    if (max === undefined) max = 1
     /*generate a value between 0 and 1, which is then multiplied 
     by the range. minimum value is then added again*/
-    return min + Math.random() * (max - min);
+    return min + Math.random() * (max - min)
 }
 
 function createPlayer($container) {
@@ -92,10 +92,10 @@ function createPlayer($container) {
     in CSS helps us here as we do not have to compensate for the usual off-set!*/
 
     //sets player position on the Y axis of the game container
-    GAME_STATE.playerX = GAME_WIDTH / 2;
+    GAME_STATE.playerX = GAME_WIDTH / 2
     //sets player position on the X axis of the game container
     GAME_STATE.playerY = GAME_HEIGHT - 120
-    ;
+    
     //creating an image element for the player
     const $player = document.createElement('img')
     //image source
@@ -108,8 +108,8 @@ function createPlayer($container) {
 function destroyPlayer($container, player) {
     lives = lives - 1
     if (lives <= 0) {
-        $container.removeChild(player);
-        GAME_STATE.gameOver = true;
+        $container.removeChild(player)
+        GAME_STATE.gameOver = true
     }
 }
 
@@ -198,7 +198,7 @@ function updateLasers(deltaTime, $container) {
 
 function destroyLaser($container, laser) {
     $container.removeChild(laser.$element)
-    laser.isDead = true;
+    laser.isDead = true
 }
 
 function createEnemy($container, x, y) {
@@ -218,57 +218,57 @@ function createEnemy($container, x, y) {
 
 function updateEnemies(deltaTime, $container) {
     //sine and cosine functions to create a wave-like movement
-    const dx = Math.sin(GAME_STATE.lastTime / 1000.0) * 50;
-    const dy = Math.cos(GAME_STATE.lastTime / 1000.0) * 10;
+    const dx = Math.sin(GAME_STATE.lastTime / 1000) * 50
+    const dy = Math.cos(GAME_STATE.lastTime / 1000) * 10
 
     const enemies = GAME_STATE.enemies
     for (let i = 0; i < enemies.length; i++) {
         const enemy = enemies[i]
         const x = enemy.x + dx
         const y = enemy.y + dy
-        setPosition(enemy.$element, x, y);
-        enemy.cooldown -= deltaTime;
+        setPosition(enemy.$element, x, y)
+        enemy.cooldown -= deltaTime
         if (enemy.cooldown <= 0) {
-            createEnemyLaser($container, x, y);
-            enemy.cooldown = ENEMY_COOLDOWN;
+            createEnemyLaser($container, x, y)
+            enemy.cooldown = ENEMY_COOLDOWN
         }
     }
-    GAME_STATE.enemies = GAME_STATE.enemies.filter(e => !e.isDead);
+    GAME_STATE.enemies = GAME_STATE.enemies.filter(e => !e.isDead)
 }
 
 function destroyEnemy($container, enemy) {
     $container.removeChild(enemy.$element)
     enemy.isDead = true
-    score += 20;
-    $score.innerHTML = score;
+    score += 20
+    $score.innerHTML = score
 }
 
 /*enemy laser functions, among others in the roject, are almost 
 identical to the others, as they share many properties and behaviors. 
 this would be a good implementation of javascript classes in the future.*/
 function createEnemyLaser($container, x, y) {
-    const $element = document.createElement("img");
-    $element.src = "assets/images/laser/Zoltraak.png";
-    $element.className = "enemy-laser";
-    $container.appendChild($element);
-    const laser = { x, y, $element };
-    GAME_STATE.enemyLasers.push(laser);
-    setPosition($element, x, y);
+    const $element = document.createElement("img")
+    $element.src = "assets/images/laser/Zoltraak.png"
+    $element.className = "enemy-laser"
+    $container.appendChild($element)
+    const laser = { x, y, $element }
+    GAME_STATE.enemyLasers.push(laser)
+    setPosition($element, x, y)
 }
   
 function updateEnemyLasers(deltaTime, $container) {
-    const lasers = GAME_STATE.enemyLasers;
+    const lasers = GAME_STATE.enemyLasers
     for (let i = 0; i < lasers.length; i++) {
-        const laser = lasers[i];
+        const laser = lasers[i]
         //enemy lasers move towards the bottom of the container
-        laser.y += deltaTime * LASER_MAX_SPEED;
+        laser.y += deltaTime * LASER_MAX_SPEED
         if (laser.y > GAME_HEIGHT) {
-            destroyLaser($container, laser);
+            destroyLaser($container, laser)
         }
-        setPosition(laser.$element, laser.x, laser.y);
-        const r1 = laser.$element.getBoundingClientRect();
-        const player = document.querySelector(".player");
-        const r2 = player.getBoundingClientRect();
+        setPosition(laser.$element, laser.x, laser.y)
+        const r1 = laser.$element.getBoundingClientRect()
+        const player = document.querySelector(".player")
+        const r2 = player.getBoundingClientRect()
         if (rectsIntersect(r1, r2)) {
             // Player was hit
             destroyPlayer($container, player)
@@ -276,7 +276,7 @@ function updateEnemyLasers(deltaTime, $container) {
             break
         }
     }
-    GAME_STATE.enemyLasers = GAME_STATE.enemyLasers.filter(e => !e.isDead);
+    GAME_STATE.enemyLasers = GAME_STATE.enemyLasers.filter(e => !e.isDead)
 }
 
 //creates necessary elements for the game
@@ -284,9 +284,9 @@ function init () {
     //declaring and initializing the 'frame' of the game
     //dollar sign refers to DOM element (convention)
     createPlayer($gameContainer)
-    $score.innerHTML = score;
-    $lives.innerHTML = lives;
-    $timer.innerHTML = count;
+    $score.innerHTML = score
+    $lives.innerHTML = lives
+    $timer.innerHTML = count
 
     const enemySpacing = (GAME_WIDTH - ENEMY_HORIZONTAL_PADDING * 2) / (ENEMIES_PER_ROW - 1)
     for (let j = 0; j < 3; j++) {
@@ -299,7 +299,7 @@ function init () {
 }
 
 function playerHasWon() {
-    return GAME_STATE.enemies.length === 0;
+    return GAME_STATE.enemies.length === 0
 }
 
 function update() {
@@ -313,11 +313,11 @@ function update() {
     const deltaTime = (currentTime - GAME_STATE.lastTime) / 1000 //converting milliseconds to seconds
 
     if ($score.innerHTML !== String(score)) {
-        $score.innerHTML = score;
+        $score.innerHTML = score
     }
 
     if ($lives.innerHTML !== String(lives)) {
-        $lives.innerHTML = lives;
+        $lives.innerHTML = lives
     }   
 
     if (GAME_STATE.gamePaused) {
