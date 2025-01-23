@@ -45,12 +45,12 @@ Instead, for example, if a key is kept pressed, the player must continue to do t
 ```
 assets/
 ├── images/
-│   ├── example/
-│   │   └── game.png
 │   ├── background/
 │   │   └── space.png
 │   ├── enemy/
 │   │   └── Qual.png
+│   ├── example/
+│   │   └── game.png
 │   ├── laser/
 │   │   ├── Zoltraak-smaller.png
 │   │   └── Zoltraak.png
