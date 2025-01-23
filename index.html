@@ -12,6 +12,14 @@
     <div class="wrap">
         <header>Qual Killer</header>
         <div class="game-wrapper">
+            <div class="game-board">
+                <div class="board-comp">
+                    <h1>Score</h1><h1 class="score"></h1>
+                </div>
+                <div class="board-comp">
+                    <h1>Lives</h1><h1 class="lives"></h1>
+                </div>
+            </div>
             <div class="game"></div>
             <div class="congratulations">
                 <h1>YOU WON</h1>
@@ -22,6 +30,12 @@
                 <h1>GAME OVER</h1>
                 <h2>So much for the hero party's mage...</h2>
                 <button class="btn" onclick="window.location.reload()">Restart</button>
+            </div>
+            <div class="game-paused">
+                <h1>GAME PAUSED</h1>
+                <h2>Frieren is gathering her thoughts</h2>
+                <button class="btn" onclick="window.location.reload()">Restart</button>
+                <button class="btn" onclick="start()">Continue</button>
             </div>
         </div>  
         <footer>left/right arrow keys or A/D keys to move</footer>

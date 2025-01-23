@@ -1,5 +1,10 @@
 //global variable for game container
 const $gameContainer = document.querySelector('.game')
+const $score = document.querySelector('.score')
+const $lives = document.querySelector('.lives')
+let score = 0
+let lives = 3
+let isRunning = true
 
 const GAME_WIDTH = 800
 const GAME_HEIGHT = 600
@@ -32,7 +37,8 @@ const GAME_STATE = {
     lasers: [],
     enemies: [],
     enemyLasers: [],
-    gameOver: false
+    gameOver: false,
+    gamePaused: false
 }
 
 function rectsIntersect(r1, r2) {
@@ -88,10 +94,11 @@ function createPlayer($container) {
 }
 
 function destroyPlayer($container, player) {
-    $container.removeChild(player);
-    GAME_STATE.gameOver = true;
-    const audio = new Audio("sound/sfx-lose.ogg");
-    audio.play();
+    lives = lives - 1
+    if (lives <= 0) {
+        $container.removeChild(player);
+        GAME_STATE.gameOver = true;
+    }
 }
 
 function updatePlayer(deltaTime) {
@@ -144,40 +151,6 @@ function createLaser($container, x, y) {
     setPosition($element, x, y)
     const audio = new Audio('assets/sounds/Zoltraak.mp3')
     audio.play()
-}
-
-function updateLasers(deltaTime, $container) {
-    const lasers = GAME_STATE.lasers
-    for (let i = 0; i < lasers.length; i++) {
-        const laser = lasers[i]
-        //lasers go from bottom to top, therefore we subtract from their position
-        laser.y -= deltaTime*LASER_MAX_SPEED
-        if (laser.y < 0) {
-            //removing laser from the game state
-            destroyLaser($container, laser)
-        }
-        setPosition(laser.$element, laser.x, laser.y)
-        //returns the boundary required for hitbox detection
-        const r1 = laser.$element.getBoundingClientRect()
-        console.log('Laser Rect:', laserRect) // Debugging
-        const enemies = GAME_STATE.enemies
-        //loop through 
-        for (let j = 0; j <lasers.length; j++) {
-            const enemy = enemies[j]
-            if (enemy.isDead) continue
-             const r2 = enemy.$element.getBoundingClientRect()
-             console.log('Laser Rect:', laserRect) // Debugging
-            if (rectsIntersect(r1, r2)) {
-                /*destroy enemy and laser on collision*/
-                
-                destroyEnemy($container, enemy)
-                destroyLaser($container, laser)
-                //breaks out of the loop since no laser can hit more than one enemy
-                break
-            }
-        }
-    }
-    GAME_STATE.lasers = GAME_STATE.lasers.filter(e => !e.isDead)
 }
 
 function updateLasers(deltaTime, $container) {
@@ -254,6 +227,8 @@ function updateEnemies(deltaTime, $container) {
 function destroyEnemy($container, enemy) {
     $container.removeChild(enemy.$element)
     enemy.isDead = true
+    score += 20;
+    $score.innerHTML = score;
 }
 
 /*enemy laser functions, among others in the roject, are almost 
@@ -269,7 +244,7 @@ function createEnemyLaser($container, x, y) {
     setPosition($element, x, y);
 }
   
-  function updateEnemyLasers(deltaTime, $container) {
+function updateEnemyLasers(deltaTime, $container) {
     const lasers = GAME_STATE.enemyLasers;
     for (let i = 0; i < lasers.length; i++) {
         const laser = lasers[i];
@@ -283,9 +258,10 @@ function createEnemyLaser($container, x, y) {
         const player = document.querySelector(".player");
         const r2 = player.getBoundingClientRect();
         if (rectsIntersect(r1, r2)) {
-          // Player was hit
-          destroyPlayer($container, player);
-          break;
+            // Player was hit
+            destroyPlayer($container, player)
+            destroyLaser($container, laser)
+            break
         }
     }
     GAME_STATE.enemyLasers = GAME_STATE.enemyLasers.filter(e => !e.isDead);
@@ -296,6 +272,8 @@ function init () {
     //declaring and initializing the 'frame' of the game
     //dollar sign refers to DOM element (convention)
     createPlayer($gameContainer)
+    $score.innerHTML = score;
+    $lives.innerHTML = lives;
 
     const enemySpacing = (GAME_WIDTH - ENEMY_HORIZONTAL_PADDING * 2) / (ENEMIES_PER_ROW - 1)
     for (let j = 0; j < 3; j++) {
@@ -312,6 +290,8 @@ function playerHasWon() {
 }
 
 function update() {
+    if(!isRunning)
+    return
     /*the rate at which requestAnimationFrame returns something is proportionate
     to the refresh rate of the screen, resulting in variable player speeds
     we counteract this by calculating how much time has elapsed since the last
@@ -319,26 +299,53 @@ function update() {
     const currentTime = Date.now()
     const deltaTime = (currentTime - GAME_STATE.lastTime) / 1000 //converting milliseconds to seconds
 
+    if ($score.innerHTML !== String(score)) {
+        $score.innerHTML = score;
+    }
+
+    if ($lives.innerHTML !== String(lives)) {
+        $lives.innerHTML = lives;
+    }   
+
+    if (GAME_STATE.gamePaused) {
+        stop()
+        document.querySelector(".game-paused").style.display = "block"
+        window.requestAnimationFrame(update)
+    }
+
     if (playerHasWon()) {
-        document.querySelector(".congratulations").style.display = "block";
-        return;
+        document.querySelector(".congratulations").style.display = "block"
+        return
     }
 
     //display game over screen when true
     if (GAME_STATE.gameOver) {
-        document.querySelector(".game-over").style.display = "block";
-        return;
+        // lives -= 1;
+        // $lives.innerHTML = lives;    
+        document.querySelector(".game-over").style.display = "block"
+        return
     }
 
     updatePlayer(deltaTime, $gameContainer)
     updateLasers(deltaTime, $gameContainer)
     updateEnemies(deltaTime, $gameContainer)
-    updateEnemyLasers(deltaTime, $gameContainer);
+    updateEnemyLasers(deltaTime, $gameContainer)
 
 
     //updating current time after the update function is called
     GAME_STATE.lastTime = currentTime
     window.requestAnimationFrame(update)
+}
+
+function start(){
+    document.querySelector(".game-paused").style.display = "none"
+    isRunning = true
+    GAME_STATE.gamePaused = false
+    window.requestAnimationFrame(update)
+}
+  
+function stop(){
+    isRunning = false
 }
 
 function onKeyDown(e) {
@@ -357,6 +364,9 @@ function onKeyDown(e) {
             break
         case ' ':
             GAME_STATE.spacePressed = true
+            break
+        case 'p':
+            GAME_STATE.gamePaused = true
             break
     }
 }
