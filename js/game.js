@@ -32,6 +32,7 @@ const GAME_STATE = {
     lasers: [],
     enemies: [],
     enemyLasers: [],
+    gameOver: false
 }
 
 function rectsIntersect(r1, r2) {
@@ -86,18 +87,11 @@ function createPlayer($container) {
     setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY)
 }
 
-function createLaser($container, x, y) {
-    const $element = document.createElement('img')
-    $element.src = 'assets/images/laser/Zoltraak.png'
-    $element.className = 'laser'
-    $container.appendChild($element)
-    /*abstraction of laser, pushed to game state
-    to allow easily changing positions of all lasers*/
-    const laser = { x, y, $element }
-    GAME_STATE.lasers.push(laser)
-    setPosition($element, x, y)
-    const audio = new Audio('assets/sounds/Zoltraak.mp3')
-    audio.play()
+function destroyPlayer($container, player) {
+    $container.removeChild(player);
+    GAME_STATE.gameOver = true;
+    const audio = new Audio("sound/sfx-lose.ogg");
+    audio.play();
 }
 
 function updatePlayer(deltaTime) {
@@ -138,6 +132,20 @@ function updatePlayer(deltaTime) {
     setPosition($player, GAME_STATE.playerX, GAME_STATE.playerY)
 }
 
+function createLaser($container, x, y) {
+    const $element = document.createElement('img')
+    $element.src = 'assets/images/laser/Zoltraak.png'
+    $element.className = 'laser'
+    $container.appendChild($element)
+    /*abstraction of laser, pushed to game state
+    to allow easily changing positions of all lasers*/
+    const laser = { x, y, $element }
+    GAME_STATE.lasers.push(laser)
+    setPosition($element, x, y)
+    const audio = new Audio('assets/sounds/Zoltraak.mp3')
+    audio.play()
+}
+
 function updateLasers(deltaTime, $container) {
     const lasers = GAME_STATE.lasers
     for (let i = 0; i < lasers.length; i++) {
@@ -161,6 +169,7 @@ function updateLasers(deltaTime, $container) {
              console.log('Laser Rect:', laserRect) // Debugging
             if (rectsIntersect(r1, r2)) {
                 /*destroy enemy and laser on collision*/
+                
                 destroyEnemy($container, enemy)
                 destroyLaser($container, laser)
                 //breaks out of the loop since no laser can hit more than one enemy
@@ -190,11 +199,12 @@ function updateLasers(deltaTime, $container) {
         if (enemy.isDead) continue
         const r2 = enemy.$element.getBoundingClientRect()
         if (rectsIntersect(r1, r2)) {
-          // Enemy was hit
-          destroyEnemy($container, enemy)
-          destroyLaser($container, laser)
-          //breaks out of the loop since no laser can hit more than one enemy
-          break
+            // Enemy was hit
+            //display winner screen when true
+            destroyEnemy($container, enemy)
+            destroyLaser($container, laser)
+            //breaks out of the loop since no laser can hit more than one enemy
+            break
         }
       }
     }
@@ -269,6 +279,14 @@ function createEnemyLaser($container, x, y) {
             destroyLaser($container, laser);
         }
         setPosition(laser.$element, laser.x, laser.y);
+        const r1 = laser.$element.getBoundingClientRect();
+        const player = document.querySelector(".player");
+        const r2 = player.getBoundingClientRect();
+        if (rectsIntersect(r1, r2)) {
+          // Player was hit
+          destroyPlayer($container, player);
+          break;
+        }
     }
     GAME_STATE.enemyLasers = GAME_STATE.enemyLasers.filter(e => !e.isDead);
 }
@@ -289,6 +307,10 @@ function init () {
     }
 }
 
+function playerHasWon() {
+    return GAME_STATE.enemies.length === 0;
+}
+
 function update() {
     /*the rate at which requestAnimationFrame returns something is proportionate
     to the refresh rate of the screen, resulting in variable player speeds
@@ -296,6 +318,17 @@ function update() {
     update was made, and using this relative value, called delta time to dictate the speed of the player*/
     const currentTime = Date.now()
     const deltaTime = (currentTime - GAME_STATE.lastTime) / 1000 //converting milliseconds to seconds
+
+    if (playerHasWon()) {
+        document.querySelector(".congratulations").style.display = "block";
+        return;
+    }
+
+    //display game over screen when true
+    if (GAME_STATE.gameOver) {
+        document.querySelector(".game-over").style.display = "block";
+        return;
+    }
 
     updatePlayer(deltaTime, $gameContainer)
     updateLasers(deltaTime, $gameContainer)
