@@ -87,3 +87,22 @@ after which the animation will repeat, creating a seamless transition*/
   animation: pop-in 1s;
 }
 
+.game .player {
+  position: absolute;
+  margin-left: -20px;
+  width: 60px;
+}
+
+.game .enemy {
+  position: absolute;
+  margin-left: -20px;
+  margin-top: -18px;
+  width: 40px;
+}
+
+.game .laser {
+  position: absolute;
+  margin-left: -2.5px;
+  height: 50px;
+}
+
