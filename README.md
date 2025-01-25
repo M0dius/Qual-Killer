@@ -89,7 +89,7 @@ README.md
 
 ## Example Images
 
-![Gameplay](./assets/example/game.png)
+![Gameplay](./assets/images/example/game.png)
 
 
 ## Limitations
